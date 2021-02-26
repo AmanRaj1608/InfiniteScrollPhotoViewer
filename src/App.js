@@ -29,15 +29,27 @@ const ImageStyle = styled.section `
 `;
 const baseURL = "https://api.unsplash.com";
 const accessKey = process.env.REACT_APP_ACCESSKEY;
+
 function App() {
   const [image,setImage] = useState([]);
+  
   useEffect(()=>{
     fetchImage()
   },[])
 
-  const fetchImage = () =>{
-    axios.get(`${baseURL}/photos/random?client_id=${accessKey}&count=12`)
-    .then(res=>setImage([...image,...res.data]))
+  const fetchImage = async () => {
+    let {data} = await axios.get(`${baseURL}/photos/random?client_id=${accessKey}&count=12`);
+    data = data.map((ele, i)=> {
+      return {
+        "id": ele.id,
+        "blur_hash": ele.blur_hash,
+        "urls": ele.urls,
+        "likes": ele.likes,
+        "views": ele.views
+      }
+    }) 
+    setImage([...image,...data]);
+    console.log(image)
   }
   return (
     <div className="App">
@@ -52,7 +64,7 @@ function App() {
         <ImageStyle>
           {image.map(im=>(
             <Suspense fallback={<Loader/>}>
-              <Photos url={im.urls.thumb} key={im.id}/> 
+              <Photos url={im.urls.thumb} likes={im.likes} key={im.id}/> 
             </Suspense>
           ))}
         </ImageStyle>

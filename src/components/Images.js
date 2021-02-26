@@ -5,11 +5,12 @@ const Img = styled.img`
     height: 100%;
     object-fit: cover;
 `;
-const images = ({url,key}) =>
+const images = ({url,key,likes}) =>
 {
     return (
         <div>
             <Img src={url} key={key} alt="picture"/>
+            <p>{likes}</p>
         </div>
     );
 };
